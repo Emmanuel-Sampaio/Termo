@@ -27,7 +27,7 @@ body {
 
 header {
     flex-shrink: 0;
-    padding: 15px 0 5px 0;
+    padding: 15px 0 8px 0;
     text-align: center;
     width: 100%;
 }
@@ -150,6 +150,7 @@ header {
     color: white;
     font-weight: bold;
     touch-action: manipulation;
+    cursor: pointer;
 }
 
 .key.wide { 
@@ -223,7 +224,6 @@ header {
         width: 32px; 
         height: 32px; 
         font-size: 1.2rem; 
-        gap: 3px;
     }
 
     #game-area[data-mode="quarteto"] .row {
@@ -238,23 +238,25 @@ header {
         gap: 10px;
     }
 
-    /* Teclado ajustado */
-    .key { 
-        height: 48px; 
-        font-size: 1rem; 
-    }
-
-    .key.wide {
-        font-size: 0.8rem;
-    }
-
+    /* Teclado ajustado para mobile */
     #keyboard {
         padding: 6px 4px;
         gap: 5px;
+        max-width: 100%;
     }
 
     .key-row {
         gap: 3px;
+    }
+
+    .key { 
+        height: 48px; 
+        font-size: 1rem;
+        min-width: 0;
+    }
+
+    .key.wide {
+        font-size: 0.8rem;
     }
     
     #message { 
