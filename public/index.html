@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termo Seguro</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23538d4e%22 rx=%2220%22/><text y=%22.9em%22 font-size=%2290%22 x=%2250%22 text-anchor=%22middle%22 fill=%22white%22>T</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <header>
+        <div class="left-icons">
+            <i class="fa-solid fa-circle-question icon-btn" title="Ajuda" onclick="toggleModal('help-modal')"></i>
+        </div>
+        <div class="logo">
+            <span>TERMO</span><span class="highlight">SEGURO</span>
+        </div>
+        <div class="right-icons">
+            <i class="fa-solid fa-chart-simple icon-btn"></i>
+            <i class="fa-solid fa-gear icon-btn"></i>
+        </div>
+    </header>
+
+    <nav class="mode-bar">
+        <button onclick="startGame('termo')" id="btn-termo" class="mode-btn">Termo</button>
+        <button onclick="startGame('dueto')" id="btn-dueto" class="mode-btn">Dueto</button>
+        <button onclick="startGame('quarteto')" id="btn-quarteto" class="mode-btn">Quarteto</button>
+    </nav>
+
+    <div class="container">
+        <div id="daily-lock" class="hidden">
+            <div class="lock-content">
+                <i class="fa-solid fa-lock"></i>
+                <h2>Tudo por hoje!</h2>
+                <p>Você já completou todos os desafios do dia.</p>
+                <p>Volte amanhã!</p>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div id="boards-container"></div>
+            <div id="message-container">
+                <p id="message"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Como Jogar</h2>
+                <button class="close-btn" onclick="toggleModal('help-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Descubra a palavra certa em tentativas limitadas.</p>
+                <div class="example">
+                    <div class="tile green">T</div><div class="tile">E</div><div class="tile">R</div><div class="tile">M</div><div class="tile">O</div>
+                </div>
+                <p><strong>VERDE:</strong> Letra certa no lugar certo.</p>
+                <div class="example">
+                    <div class="tile">V</div><div class="tile yellow">I</div><div class="tile">O</div><div class="tile">L</div><div class="tile">A</div>
+                </div>
+                <p><strong>AMARELO:</strong> Letra certa no lugar errado.</p>
+                <div class="example">
+                    <div class="tile">P</div><div class="tile">U</div><div class="tile">L</div><div class="tile gray">G</div><div class="tile">A</div>
+                </div>
+                <p><strong>CINZA:</strong> Letra não existe na palavra.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
