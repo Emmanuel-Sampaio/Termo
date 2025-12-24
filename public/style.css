@@ -27,64 +27,102 @@ body {
 
 header {
     flex-shrink: 0;
-    padding: 10px 0;
+    padding: 15px 0 5px 0;
     text-align: center;
     width: 100%;
 }
 
-.logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+.logo { 
+    font-size: 28px; 
+    font-weight: 900; 
+    letter-spacing: 2px; 
+}
+
 .highlight { color: var(--green); }
 
 /* MODES */
 .mode-bar {
-    display: flex; gap: 5px; margin: 10px 0;
-    background: #202022; padding: 5px; border-radius: 50px;
+    display: flex; 
+    gap: 5px; 
+    margin: 8px 0;
+    background: #202022; 
+    padding: 5px; 
+    border-radius: 50px;
     flex-shrink: 0;
 }
-.mode-btn {
-    background: transparent; border: none; color: #818384;
-    padding: 6px 15px; cursor: pointer; border-radius: 20px;
-    font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
-}
-.mode-btn.active { background-color: var(--green); color: white; }
-.mode-btn:disabled { opacity: 0.3; text-decoration: line-through; }
 
-/* GAME AREA COM SCROLL */
+.mode-btn {
+    background: transparent; 
+    border: none; 
+    color: #818384;
+    padding: 6px 15px; 
+    cursor: pointer; 
+    border-radius: 20px;
+    font-weight: 700; 
+    text-transform: uppercase; 
+    font-size: 0.8rem;
+}
+
+.mode-btn.active { 
+    background-color: var(--green); 
+    color: white; 
+}
+
+.mode-btn:disabled { 
+    opacity: 0.3; 
+    text-decoration: line-through; 
+}
+
+/* GAME AREA - Centralizado verticalmente */
 #game-area {
     flex: 1;
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alinha no topo para o scroll funcionar */
-    overflow-y: auto;        /* Permite scroll se os blocos forem muitos */
+    align-items: center;
+    overflow-y: auto;
     min-height: 0;
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 #boards-container {
     display: flex;
-    flex-wrap: wrap;         /* Permite que os tabuleiros quebrem linha se necessário */
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
     padding: 10px;
     justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
-.board { display: grid; gap: 5px; }
-.row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.board { 
+    display: grid; 
+    gap: 5px; 
+}
+
+.row { 
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 5px; 
+}
 
 .tile {
-    width: 50px; height: 50px;
+    width: 62px; 
+    height: 62px;
     border: 2px solid var(--tile-border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem; font-weight: 800; border-radius: 4px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 2rem; 
+    font-weight: 800; 
+    border-radius: 4px;
 }
 
 /* TECLADO FIXO EMBAIXO */
 #keyboard {
     width: 100%;
     max-width: 500px;
-    padding: 10px 5px;
+    padding: 8px 5px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -92,12 +130,17 @@ header {
     background-color: var(--bg-color);
 }
 
-.key-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
+.key-row { 
+    display: flex; 
+    justify-content: center; 
+    gap: 4px; 
+    width: 100%; 
+}
 
 .key {
     background-color: #4c4347;
-    height: 48px;
-    font-size: 1rem;
+    height: 58px;
+    font-size: 1.2rem;
     border: none;
     border-radius: 4px;
     flex: 1;
@@ -108,44 +151,167 @@ header {
     font-weight: bold;
     touch-action: manipulation;
 }
-.key.wide { flex: 1.5; font-size: 0.8rem; }
+
+.key.wide { 
+    flex: 1.5; 
+    font-size: 0.9rem; 
+}
+
 .key.green { background-color: var(--green); }
 .key.yellow { background-color: var(--yellow); }
 .key.gray { background-color: #1e1e1f; color: #555; }
 
-/* MODAL CORRIGIDO */
+/* MODAL */
 .modal, .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 9999; backdrop-filter: blur(4px);
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    z-index: 9999; 
+    backdrop-filter: blur(4px);
 }
+
 .modal-content {
-    background-color: #1e1e1f; border: 1px solid #3a3a3c;
-    padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center;
+    background-color: #1e1e1f; 
+    border: 1px solid #3a3a3c;
+    padding: 25px; 
+    border-radius: 12px; 
+    width: 90%; 
+    max-width: 400px; 
+    text-align: center;
 }
 
-/* RESPONSIVIDADE MOBILE AGRESSIVA */
+/* RESPONSIVIDADE MOBILE */
 @media screen and (max-width: 480px) {
-    .tile { width: 40px; height: 40px; font-size: 1.5rem; }
+    header {
+        padding: 12px 0 5px 0;
+    }
 
-    /* Redução drástica para caber Dueto e Quarteto sem quebrar */
-    #game-area[data-mode="dueto"] .tile { width: 32px; height: 32px; font-size: 1.2rem; }
-    #game-area[data-mode="quarteto"] .tile { width: 28px; height: 28px; font-size: 1rem; }
+    .logo { 
+        font-size: 24px; 
+    }
 
-    .key { height: 42px; font-size: 0.9rem; }
+    .mode-bar {
+        margin: 6px 0;
+    }
+
+    /* Tabuleiro normal */
+    .tile { 
+        width: 52px; 
+        height: 52px; 
+        font-size: 1.8rem; 
+    }
+
+    /* Modo DUETO - dois tabuleiros lado a lado */
+    #game-area[data-mode="dueto"] .tile { 
+        width: 42px; 
+        height: 42px; 
+        font-size: 1.5rem; 
+    }
+
+    #game-area[data-mode="dueto"] #boards-container {
+        gap: 12px;
+    }
+
+    /* Modo QUARTETO - quatro tabuleiros em grade 2x2 */
+    #game-area[data-mode="quarteto"] .tile { 
+        width: 32px; 
+        height: 32px; 
+        font-size: 1.2rem; 
+        gap: 3px;
+    }
+
+    #game-area[data-mode="quarteto"] .row {
+        gap: 3px;
+    }
+
+    #game-area[data-mode="quarteto"] .board {
+        gap: 3px;
+    }
+
+    #game-area[data-mode="quarteto"] #boards-container {
+        gap: 10px;
+    }
+
+    /* Teclado ajustado */
+    .key { 
+        height: 48px; 
+        font-size: 1rem; 
+    }
+
+    .key.wide {
+        font-size: 0.8rem;
+    }
+
+    #keyboard {
+        padding: 6px 4px;
+        gap: 5px;
+    }
+
+    .key-row {
+        gap: 3px;
+    }
     
-    #message { font-size: 14px; padding: 10px 20px; }
+    #message { 
+        font-size: 14px; 
+        padding: 10px 20px; 
+    }
+}
+
+/* Para telas muito pequenas */
+@media screen and (max-width: 380px) {
+    .tile { 
+        width: 48px; 
+        height: 48px; 
+        font-size: 1.6rem; 
+    }
+
+    #game-area[data-mode="dueto"] .tile { 
+        width: 38px; 
+        height: 38px; 
+        font-size: 1.4rem; 
+    }
+
+    #game-area[data-mode="quarteto"] .tile { 
+        width: 28px; 
+        height: 28px; 
+        font-size: 1rem; 
+    }
+
+    .key { 
+        height: 44px; 
+        font-size: 0.95rem; 
+    }
 }
 
 /* ANIMAÇÕES */
-@keyframes pop { 50% { transform: scale(1.1); } }
-.tile[data-status="filled"] { border-color: #565758; animation: pop 0.1s ease-in-out; }
+@keyframes pop { 
+    50% { transform: scale(1.1); } 
+}
 
-.hidden { display: none !important; }
+.tile[data-status="filled"] { 
+    border-color: #565758; 
+    animation: pop 0.1s ease-in-out; 
+}
+
+.hidden { 
+    display: none !important; 
+}
 
 .share-btn {
-    background-color: var(--green); color: white; border: none;
-    padding: 12px; font-size: 1rem; font-weight: bold;
-    border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%;
+    background-color: var(--green); 
+    color: white; 
+    border: none;
+    padding: 12px; 
+    font-size: 1rem; 
+    font-weight: bold;
+    border-radius: 8px; 
+    cursor: pointer; 
+    margin-top: 15px; 
+    width: 100%;
 }
