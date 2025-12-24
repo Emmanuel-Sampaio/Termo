@@ -175,30 +175,24 @@ function checkWord(guess, secret) {
     return result;
 }
 
-// ==================================================
-//              LÓGICA DE ANALYTICS (NOVA)
-// ==================================================
 
-// Rota para contar visita (O Frontend chama isso ao carregar)
 app.get('/api/visit', (req, res) => {
     visitasHoje++;
     console.log(`📈 Nova visita! Total hoje: ${visitasHoje}`);
     res.json({ success: true });
 });
 
-// ==================================================
-//              AGENDAMENTOS (CRON JOBS)
-// ==================================================
 
 // 1. Meia-noite: Resetar palavras do jogo
-cron.schedule('0 0 * * *', () => {
-    console.log("⏰ Meia-noite! Renovando banco de palavras...");
+cron.schedule('0 3 * * *', () => {
+    console.log("⏰ Meia-noite Brasília! Renovando banco de palavras...");
     PALAVRAS = []; 
+    PALAVRAS_DO_DIA = []; 
+    activeGames = {};
     populateWordBank();
 });
-
 // 2. 23:59: Enviar relatório de visitas por e-mail
-cron.schedule('* * * * *', () => {
+cron.schedule('0 0 * * *', () => {
     console.log("📧 Enviando relatório diário de visitas...");
     
     const mailOptions = {

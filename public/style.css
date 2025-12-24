@@ -9,15 +9,16 @@
 }
 
 body {
-    font-family: 'Nunito', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
+    font-family: 'Kanit', sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    height: 100vh;        
+    height: 100dvh;       
+    overflow: hidden;     
 }
 
 header {
@@ -53,8 +54,13 @@ header {
 }
 
 #game-area {
-    display: flex; flex-direction: column; align-items: center;
-    width: 100%; flex-grow: 1; justify-content: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+    overflow-y: auto;     
+    width: 100%;
+    min-height: 0;        
 }
 
 #boards-container {
@@ -144,3 +150,107 @@ header {
 .close-btn { background: none; border: none; color: #818384; font-size: 24px; cursor: pointer; }
 .example { display: flex; gap: 5px; margin: 10px 0; }
 .example .tile { width: 40px; height: 40px; font-size: 20px; }
+/* --- ESTILOS DO TECLADO VIRTUAL --- */
+#keyboard {
+    width: 100%;
+    max-width: 500px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 auto;
+    flex-shrink: 0;       
+    padding-bottom: 20px; 
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.key {
+    background-color: #4c4347;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    height: 45px;         
+    flex: 1;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.key.wide { flex: 1.5; font-size: 1rem; }
+
+/* Cores das teclas conforme o jogo avança */
+.key.green { background-color: #3aa394; border-color: #3aa394; }
+.key.yellow { background-color: #d3ad69; border-color: #d3ad69; }
+.key.gray { background-color: #1e1e1e; opacity: 0.5; }
+
+/* --- BOTÃO DE COMPARTILHAR --- */
+.share-btn {
+    background-color: #3aa394;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 0 #2c7a6f;
+    transition: transform 0.1s;
+}
+
+.share-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+.modal {
+    position: fixed;      /* ISSO é o que faz flutuar */
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Fundo escuro transparente */
+    display: flex;        /* Centraliza o conteúdo */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;        /* Garante que fique na frente de tudo */
+    backdrop-filter: blur(2px); /* Efeito de desfoque no fundo */
+}
+.modal-content {
+    background: #312a2c;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid #4c4347;
+    text-align: center;   /* Centraliza texto e botão */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Sombra para dar profundidade */
+    position: relative;   /* Para o botão fechar se posicionar */
+}
+.hidden {
+    display: none !important;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-height: 700px) {
+    .tile { width: 30px; height: 30px; font-size: 1.2rem; }
+    .key { height: 38px; font-size: 0.9rem; }
+    h1 { font-size: 1.2rem; }
+    header { padding: 5px 20px; }
+    .controls { margin: 5px 0; }
+}

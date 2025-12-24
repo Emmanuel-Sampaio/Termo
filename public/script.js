@@ -2,26 +2,41 @@ let currentGameId = null;
 let currentRow = 0;
 let currentGuess = "";
 let isGameOver = false;
+let currentResults = []; 
 let isAnimating = false;
 const MAX_ATTEMPTS = 9;
 
 window.onload = () => {
-    // --- NOVO: RASTREADOR DE VISITAS ---
-    // Avisa o backend que alguém entrou no site
-    fetch('/api/visit')
-        .then(() => console.log("📊 Visita registrada!"))
-        .catch(err => console.log("⚠️ Não foi possível registrar visita (Backend offline?)"));
-
-    // --- LÓGICA DE JOGO E BLOQUEIO ---
-    
-    // 1. Atualiza visual dos botões (bloqueia os que já foram jogados hoje)
+    fetch('/api/visit').catch(() => {});
+    createKeyboard();
     updateLockedButtons();
 
-    // 2. Tenta iniciar o primeiro modo disponível
+    // --- BLOCO NOVO: Verifica se já jogou e mostra o popup ---
+    const lastGame = JSON.parse(localStorage.getItem('termo_last_result'));
+    const today = new Date().toDateString();
+
+    if (lastGame && lastGame.date === today) {
+        
+        currentResults = lastGame.results; 
+        currentGameId = lastGame.gameId;
+        
+        
+        showFullLockScreen(); 
+        
+                setTimeout(() => {
+            const title = lastGame.win ? "VITÓRIA!" : "FIM DE JOGO";
+            const msg = `A resposta era: ${lastGame.solution.join(", ")}`;
+            showResultModal(title, msg);
+        }, 500);
+        
+        return; 
+    }
+    // ---------------------------------------------------------
+
     if (!isModeLocked('termo')) startGame('termo');
     else if (!isModeLocked('dueto')) startGame('dueto');
     else if (!isModeLocked('quarteto')) startGame('quarteto');
-    else showFullLockScreen(); // Tudo bloqueado
+    else showFullLockScreen();
 };
 
 // --- CONTROLE DE BLOQUEIO GRANULAR ---
@@ -164,6 +179,8 @@ function updateCurrentTiles() {
     }
 }
 
+/* Substitua a função submitGuess inteira por esta: */
+
 async function submitGuess() {
     isAnimating = true;
     
@@ -174,54 +191,60 @@ async function submitGuess() {
             body: JSON.stringify({ gameId: currentGameId, guess: currentGuess })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            if (response.status === 404) {
-                showMessage("Jogo expirado. Reinicie a página.");
-                isGameOver = true;
-                return;
-            }
-            throw new Error(errorData.error || "Erro de conexão");
-        }
+        if (!response.ok) throw new Error();
 
         const data = await response.json();
+        
+                currentResults.push(data.results);
+        if (typeof updateKeyColors === "function") {
+            updateKeyColors(currentGuess, data.results); 
+        }
+        // -------------------------------------------------
+
         await animateResults(data.results);
 
         const currentMode = document.getElementById('game-area').dataset.mode;
 
         if (data.gameOver) {
             isGameOver = true;
-            
-            // LÓGICA DE FIM DE JOGO
-            if (data.message) {
-                // Ganhou
-                showMessage(data.message);
-                celebrateWin(data.results);
-            } else {
-                // Perdeu: Mostra a solução vinda do backend
-                const resposta = data.solution ? data.solution.join(", ") : "???";
-                showMessage(`Que pena! Era: ${resposta}`);
-            }
-
-            // Salva o bloqueio SÓ para este modo
             saveModeLock(currentMode);
+            
+           
+            if (typeof showResultModal === "function") {
+                if (data.message) {
+                    celebrateWin(data.results);
+                    setTimeout(() => showResultModal("VITÓRIA!", "Parabéns, você acertou!"), 1500);
+                } else {
+                    const resposta = data.solution ? data.solution.join(", ") : "???";
+                    setTimeout(() => showResultModal("FIM DE JOGO", `A resposta era: ${resposta}`), 1000);
+                }
+            } else {
+                
+                showMessage(data.message || `Resposta: ${data.solution}`);
+            }
+            // -----------------------------------
 
         } else {
             currentRow++;
-            // Se atingiu o limite de tentativas (Perdeu por tentativas)
             if (currentRow >= MAX_ATTEMPTS) {
                 isGameOver = true;
-                const resposta = data.solution ? data.solution.join(", ") : "???";
-                showMessage(`Que pena! Era: ${resposta}`);
-                
                 saveModeLock(currentMode);
+                const resposta = data.solution ? data.solution.join(", ") : "???";
+                
+                
+                if (typeof showResultModal === "function") {
+                    setTimeout(() => showResultModal("FIM DE JOGO", `A resposta era: ${resposta}`), 1000);
+                } else {
+                    showMessage(`A resposta era: ${resposta}`);
+                }
             } else {
                 currentGuess = "";
                 isAnimating = false;
             }
         }
     } catch (err) {
-        showMessage(err.message || "Erro de conexão.");
+        console.error(err);
+        showMessage("Erro de conexão");
         isAnimating = false;
     }
 }
@@ -295,4 +318,106 @@ function toggleModal(modalId) {
 window.onclick = function(event) {
     const modal = document.getElementById('help-modal');
     if (event.target === modal) modal.classList.add('hidden');
+}
+// --- FUNÇÕES DO TECLADO VIRTUAL ---
+function createKeyboard() {
+    const keys = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+    const container = document.getElementById('keyboard');
+    container.innerHTML = '';
+
+    keys.forEach((row, i) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'key-row';
+
+        if (i === 2) { // Adiciona Enter na última linha
+            const enter = document.createElement('button');
+            enter.className = 'key wide';
+            enter.innerText = 'ENTER';
+            enter.onclick = () => handleKey('Enter');
+            rowDiv.appendChild(enter);
+        }
+
+        row.split('').forEach(char => {
+            const btn = document.createElement('button');
+            btn.className = 'key';
+            btn.id = `key-${char}`;
+            btn.innerText = char;
+            btn.onclick = () => handleKey(char);
+            rowDiv.appendChild(btn);
+        });
+
+        if (i === 2) { // Adiciona Backspace na última linha
+            const back = document.createElement('button');
+            back.className = 'key wide';
+            back.innerText = '⌫';
+            back.onclick = () => handleKey('Backspace');
+            rowDiv.appendChild(back);
+        }
+        container.appendChild(rowDiv);
+    });
+}
+
+function handleKey(key) {
+    if (isGameOver || isAnimating) return;
+
+    if (key === 'Enter') {
+        if (currentGuess.length === 5) submitGuess();
+        else showMessage("Muito curta");
+    } else if (key === 'Backspace') {
+        currentGuess = currentGuess.slice(0, -1);
+        updateCurrentTiles();
+    } else if (/^[A-Z]$/.test(key)) {
+        if (currentGuess.length < 5) {
+            currentGuess += key;
+            updateCurrentTiles();
+        }
+    }
+}
+
+// Atualiza cores do teclado virtual
+function updateKeyColors(guess, feedbacks) {
+    const letters = guess.split('');
+    feedbacks.forEach(boardResult => {
+        if (!boardResult.feedback) return;
+        boardResult.feedback.forEach((status, i) => {
+            const keyBtn = document.getElementById(`key-${letters[i]}`);
+            if (keyBtn) {
+                // A cor verde tem prioridade sobre amarelo, que tem prioridade sobre cinza
+                if (keyBtn.classList.contains('green')) return;
+                if (keyBtn.classList.contains('yellow') && status === 'gray') return;
+                
+                keyBtn.className = `key ${status}`;
+            }
+        });
+    });
+}
+
+// --- FUNÇÃO DE COMPARTILHAR ---
+function shareResult() {
+    let text = `Termo Blindado #${currentGameId || 'Diário'} ${currentRow}/9\n`;
+    
+    // Gera os emojis
+    currentResults.forEach(turn => {
+        // Pega apenas o primeiro board para simplificar o share (ou combina se for dueto)
+        // Aqui vou simplificar mostrando os emojis do primeiro board
+        const res = turn[0]; 
+        if (res.solved) text += "🟩🟩🟩🟩🟩\n";
+        else if (res.feedback) {
+            text += res.feedback.map(c => c === 'green' ? '🟩' : c === 'yellow' ? '🟨' : '⬛').join("") + "\n";
+        }
+    });
+
+    text += "\nJogue em: https://termo-blindado.onrender.com";
+
+    navigator.clipboard.writeText(text).then(() => {
+        showMessage("Copiado! Cole no Twitter/Zap");
+    }).catch(() => {
+        showMessage("Erro ao copiar");
+    });
+}
+
+function showResultModal(title, solution) {
+    document.getElementById('result-title').innerText = title;
+    document.getElementById('result-solution').innerText = solution;
+    toggleModal('result-modal');
 }
