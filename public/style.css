@@ -6,7 +6,11 @@
     --yellow: #b59f3b;
     --gray: #3a3a3c;
     --text-color: #ffffff;
+    --key-bg: #818384;
 }
+
+* { box-sizing: border-box; }
+
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -20,164 +24,79 @@ body {
     overflow: hidden;
     padding-bottom: env(safe-area-inset-bottom);
 }
+
 header {
     flex-shrink: 0;
-    padding: 5px 20px;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
 }
 
-.logo { font-size: 28px; font-weight: 900; letter-spacing: 2px; user-select: none; }
+.logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
 .highlight { color: var(--green); }
-.icon-btn { font-size: 20px; color: #565758; cursor: pointer; transition: color 0.3s; }
-.icon-btn:hover { color: white; }
 
 /* MODES */
 .mode-bar {
-    display: flex; gap: 10px; margin-top: 15px;
+    display: flex; gap: 5px; margin: 10px 0;
     background: #202022; padding: 5px; border-radius: 50px;
+    flex-shrink: 0;
 }
 .mode-btn {
     background: transparent; border: none; color: #818384;
-    padding: 8px 20px; cursor: pointer; border-radius: 20px;
-    font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;
+    padding: 6px 15px; cursor: pointer; border-radius: 20px;
+    font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
 }
 .mode-btn.active { background-color: var(--green); color: white; }
+.mode-btn:disabled { opacity: 0.3; text-decoration: line-through; }
 
-/* Botão bloqueado (Já jogou) */
-.mode-btn:disabled { 
-    opacity: 0.3; 
-    cursor: not-allowed; 
-    text-decoration: line-through; 
-    background-color: transparent !important; /* Remove o verde se estava ativo */
-    color: #555 !important;
-}
-.controls {
-    flex-shrink: 0;
-    margin: 5px 0;
-}
-
+/* GAME AREA COM SCROLL */
 #game-area {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     width: 100%;
-    min-height: 0; 
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha no topo para o scroll funcionar */
+    overflow-y: auto;        /* Permite scroll se os blocos forem muitos */
+    min-height: 0;
+    padding: 10px 0;
 }
 
 #boards-container {
     display: flex;
-    gap: 8px;
-    padding: 5px;
+    flex-wrap: wrap;         /* Permite que os tabuleiros quebrem linha se necessário */
+    gap: 15px;
+    padding: 10px;
     justify-content: center;
-    align-items: center;
-    max-width: 100%;
+    width: 100%;
 }
-.board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; }
+
+.board { display: grid; gap: 5px; }
 .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
 
 .tile {
-    width: 52px; height: 52px;
+    width: 50px; height: 50px;
     border: 2px solid var(--tile-border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 28px; font-weight: 800; text-transform: uppercase;
-    user-select: none; border-radius: 6px; transition: transform 0.2s;
-}
-.tile[data-status="filled"] { border-color: #565758; animation: pop 0.1s ease-in-out; }
-@keyframes pop { 50% { transform: scale(1.15); } }
-
-.green { background-color: var(--green); border-color: var(--green) !important; }
-.yellow { background-color: var(--yellow); border-color: var(--yellow) !important; }
-.gray { background-color: var(--gray); border-color: var(--gray) !important; }
-
-.flip { animation: flip-animation 0.5s ease forwards; }
-@keyframes flip-animation {
-    0% { transform: rotateX(0deg); }
-    50% { transform: rotateX(90deg); }
-    100% { transform: rotateX(0deg); }
+    font-size: 1.8rem; font-weight: 800; border-radius: 4px;
 }
 
-.win { animation: win-dance 0.6s ease-in-out; }
-@keyframes win-dance {
-    0%, 100% { transform: translateY(0); }
-    20% { transform: translateY(-15px); }
-    40% { transform: translateY(5px); }
-    60% { transform: translateY(-7px); }
-    80% { transform: translateY(2px); }
-}
-
-/* BLOQUEIO DIÁRIO */
-#daily-lock {
-    display: flex; justify-content: center; align-items: center;
-    height: 100%; width: 100%;
-}
-#daily-lock.hidden { display: none; }
-.lock-content {
-    text-align: center; color: #818384;
-}
-.lock-content i { font-size: 50px; margin-bottom: 20px; color: var(--green); }
-.lock-content h2 { color: white; margin: 10px 0; }
-
-/* MENSAGEM FLUTUANTE */
-#message-container {
-    position: fixed; top: 15%; left: 50%;
-    transform: translateX(-50%); z-index: 2000;
-    pointer-events: none; width: auto;
-    display: flex; justify-content: center;
-}
-#message {
-    font-size: 16px; font-weight: 700;
-    background-color: #ffffff; color: #000000;
-    padding: 15px 25px; border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    opacity: 0; transform: translateY(20px);
-    transition: all 0.3s;
-    pointer-events: auto;
-}
-#message.show { opacity: 1; transform: translateY(0); }
-
-/* MODAL */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1000; backdrop-filter: blur(5px);
-}
-.hidden { display: none !important; }
-.modal-content {
-    background-color: #121213; border: 1px solid #3a3a3c;
-    padding: 20px; border-radius: 8px; width: 90%; max-width: 500px; color: white;
-}
-.modal-header {
-    display: flex; justify-content: space-between; margin-bottom: 20px;
-    border-bottom: 1px solid #3a3a3c; padding-bottom: 10px;
-}
-.close-btn { background: none; border: none; color: #818384; font-size: 24px; cursor: pointer; }
-.example { display: flex; gap: 5px; margin: 10px 0; }
-.example .tile { width: 40px; height: 40px; font-size: 20px; }
-/* --- ESTILOS DO TECLADO VIRTUAL --- */
+/* TECLADO FIXO EMBAIXO */
 #keyboard {
     width: 100%;
     max-width: 500px;
-    padding: 5px;
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     flex-shrink: 0; 
-    margin-bottom: 5px;
+    background-color: var(--bg-color);
 }
 
-.key-row {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    width: 100%;
-}
+.key-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
 
 .key {
     background-color: #4c4347;
-    height: 45px;
+    height: 48px;
     font-size: 1rem;
     border: none;
     border-radius: 4px;
@@ -189,99 +108,44 @@ header {
     font-weight: bold;
     touch-action: manipulation;
 }
-.key.wide {
-    flex: 1.5;
-    font-size: 0.8rem;
-}
+.key.wide { flex: 1.5; font-size: 0.8rem; }
+.key.green { background-color: var(--green); }
+.key.yellow { background-color: var(--yellow); }
+.key.gray { background-color: #1e1e1f; color: #555; }
 
-/* Cores das teclas conforme o jogo avança */
-.key.green { background-color: #3aa394; border-color: #3aa394; }
-.key.yellow { background-color: #d3ad69; border-color: #d3ad69; }
-.key.gray { background-color: #1e1e1e; opacity: 0.5; }
-
-/* --- BOTÃO DE COMPARTILHAR --- */
-.share-btn {
-    background-color: #3aa394;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 4px 0 #2c7a6f;
-    transition: transform 0.1s;
-}
-
-.share-btn:active {
-    transform: translateY(4px);
-    box-shadow: none;
-}
-.modal {
-    position: fixed;      /* ISSO é o que faz flutuar */
-    top: 0; 
-    left: 0;
-    width: 100%; 
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Fundo escuro transparente */
-    display: flex;        /* Centraliza o conteúdo */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;        /* Garante que fique na frente de tudo */
-    backdrop-filter: blur(2px); /* Efeito de desfoque no fundo */
+/* MODAL CORRIGIDO */
+.modal, .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999; backdrop-filter: blur(4px);
 }
 .modal-content {
-    background: #312a2c;
-    padding: 25px;
-    border-radius: 10px;
-    max-width: 400px;
-    width: 90%;
-    border: 2px solid #4c4347;
-    text-align: center;   /* Centraliza texto e botão */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Sombra para dar profundidade */
-    position: relative;   /* Para o botão fechar se posicionar */
-}
-.hidden {
-    display: none !important;
+    background-color: #1e1e1f; border: 1px solid #3a3a3c;
+    padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center;
 }
 
+/* RESPONSIVIDADE MOBILE AGRESSIVA */
 @media screen and (max-width: 480px) {
-    .tile {
-        width: 35px;
-        height: 35px;
-        font-size: 1.2rem;
-    }
+    .tile { width: 40px; height: 40px; font-size: 1.5rem; }
 
-    #game-area[data-mode="dueto"] .tile {
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
-    }
+    /* Redução drástica para caber Dueto e Quarteto sem quebrar */
+    #game-area[data-mode="dueto"] .tile { width: 32px; height: 32px; font-size: 1.2rem; }
+    #game-area[data-mode="quarteto"] .tile { width: 28px; height: 28px; font-size: 1rem; }
 
-    #game-area[data-mode="quarteto"] .tile {
-        width: 22px;
-        height: 22px;
-        font-size: 0.8rem;
-    }
-
-    .key {
-        height: 40px;
-        font-size: 0.9rem;
-    }
-
-    .key.wide {
-        font-size: 0.7rem;
-    }
+    .key { height: 42px; font-size: 0.9rem; }
+    
+    #message { font-size: 14px; padding: 10px 20px; }
 }
 
-/* 5. Garante que o modal de resultado não fique gigante */
-.modal-content {
-    max-height: 80vh;
-    overflow-y: auto;
+/* ANIMAÇÕES */
+@keyframes pop { 50% { transform: scale(1.1); } }
+.tile[data-status="filled"] { border-color: #565758; animation: pop 0.1s ease-in-out; }
+
+.hidden { display: none !important; }
+
+.share-btn {
+    background-color: var(--green); color: white; border: none;
+    padding: 12px; font-size: 1rem; font-weight: bold;
+    border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%;
 }
