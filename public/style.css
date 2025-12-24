@@ -16,9 +16,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;        
-    height: 100dvh;       
-    overflow: hidden;     
+    height: 100vh;
+    height: 100dvh; /* Dynamic Viewport Height para mobile */
+    overflow: hidden;
+    padding-bottom: env(safe-area-inset-bottom); /* Respeita a barra do iPhone */
 }
 
 header {
@@ -54,13 +55,13 @@ header {
 }
 
 #game-area {
-    flex-grow: 1;
+    flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;  
-    overflow-y: auto;     
+    align-items: center;
     width: 100%;
-    min-height: 0;        
+    min-height: 0; 
+    overflow-y: auto;
 }
 
 #boards-container {
@@ -154,13 +155,11 @@ header {
 #keyboard {
     width: 100%;
     max-width: 500px;
-    padding: 5px;
+    padding: 8px 4px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin: 0 auto;
-    flex-shrink: 0;       
-    padding-bottom: 20px; 
+    gap: 5px;
+    flex-shrink: 0; 
 }
 
 .key-row {
@@ -175,7 +174,7 @@ header {
     color: white;
     border: none;
     border-radius: 4px;
-    height: 45px;         
+    height: 48px; 
     flex: 1;
     font-weight: bold;
     cursor: pointer;
@@ -183,7 +182,6 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    user-select: none;
     touch-action: manipulation;
 }
 
@@ -246,11 +244,26 @@ header {
     display: none !important;
 }
 
-/* Ajuste para telas pequenas */
-@media (max-height: 700px) {
-    .tile { width: 30px; height: 30px; font-size: 1.2rem; }
-    .key { height: 38px; font-size: 0.9rem; }
-    h1 { font-size: 1.2rem; }
-    header { padding: 5px 20px; }
-    .controls { margin: 5px 0; }
+@media screen and (max-width: 430px) {
+    .tile {
+        width: 11vw; /* Usa largura da tela para os quadrados */
+        max-width: 42px;
+        height: 11vw;
+        max-height: 42px;
+        font-size: 1.4rem;
+    }
+
+    .key {
+        height: 42px; /* Teclas um pouco menores */
+        font-size: 1rem;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    .mode-btn {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
 }
